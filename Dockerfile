@@ -21,8 +21,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Install PHP extensions required by Laravel
 RUN docker-php-ext-install pdo pdo_sqlite mbstring zip bcmath gd opcache
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite & mod_headers
+RUN a2enmod rewrite headers
 
 # Configure Apache DocumentRoot to Laravel's public directory
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public

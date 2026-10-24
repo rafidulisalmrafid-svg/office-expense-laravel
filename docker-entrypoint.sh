@@ -6,6 +6,17 @@ PORT="${PORT:-80}"
 sed -i "s/Listen [0-9]*/Listen $PORT/g" /etc/apache2/ports.conf
 sed -i "s/<VirtualHost \*:[0-9]*>/<VirtualHost *:$PORT>/g" /etc/apache2/sites-available/000-default.conf
 
+# Ensure valid Laravel APP_KEY
+if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "null" ]; then
+    export APP_KEY="base64:UDEE8ziFm8SyTVrGy+xAtOFehg86WCsMI1js2T9BEZs="
+fi
+
+# Ensure .env file exists in container
+if [ ! -f /var/www/html/.env ]; then
+    cp /var/www/html/.env.example /var/www/html/.env
+    sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" /var/www/html/.env
+fi
+
 # Ensure SQLite database directory & file exist with proper permissions
 mkdir -p /var/www/html/database
 if [ ! -f /var/www/html/database/database.sqlite ]; then
